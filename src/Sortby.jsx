@@ -4,7 +4,6 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-// import {sortproducts,getProducts} from "./actions/index";
 import { useDispatch } from "react-redux";
 import { getProducts, sortProducts } from "./reducerAction";
 export default function SelectSortType() {
@@ -28,7 +27,7 @@ export default function SelectSortType() {
           label="Sortby"
           onChange={handleChange}
         >
-          <MenuItem value={"pl"}> Price low to high</MenuItem>
+          <MenuItem value={"pl"}>Price low to high</MenuItem>
           <MenuItem value={"ph"}>Price high to low</MenuItem>
           <MenuItem value={"rc"}>Recommended</MenuItem>
         </Select>

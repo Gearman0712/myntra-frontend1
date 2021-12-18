@@ -1,10 +1,6 @@
 import { useState } from "react";
-// import { useHistory, useLocation } from "react-router-dom";
-
 import { Grid, ListItem, makeStyles, Typography } from "@material-ui/core";
 import Checkbox from "@material-ui/core/Checkbox";
-// import { useProduct } from "../../context";
-// import { getAllProducts } from "../../apis/productService";
 import { useSelector, useDispatch } from "react-redux";
 import { isFilterSelected, isItemAdded } from "./utilities";
 import { setAllFilters, getProducts } from "./reducerAction";
@@ -68,27 +64,14 @@ const useStyles = makeStyles((theme) => ({
 
 export function Filters() {
   const myState = useSelector((state) => state.dashboard);
-  console.log(myState.selectedFilters.genders);
-  console.log("tata");
+
   var dispatch = useDispatch();
   const classes = useStyles();
-  // const history = useHistory();
-  // const path = useLocation();
-  // const { productsState, productsDispatch } = useProduct();
 
   const setFiletrs = (label, value, isChecked) => {
     let arrGen = [...myState.selectedFilters.genders];
-    // let arrCat = productsState?.selectedFilters?.categories
-    //   ? productsState?.selectedFilters?.categories
-    //   : [];
     let arrBrands = [...myState.selectedFilters.brands];
-    // let arrBrands = productsState?.selectedFilters?.brands
-    //   ? productsState?.selectedFilters?.brands
-    //   : [];
     let arrColors = [...myState.selectedFilters.colors];
-    // let arrColors = productsState?.selectedFilters?.colors
-    //   ? productsState?.selectedFilters?.colors
-    //   : [];
 
     if (label === "genders") {
       if (isChecked) {

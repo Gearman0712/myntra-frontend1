@@ -1,22 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  NavLink,
-  useNavigate,
-  useRouteMatch,
-  useLocation,
-} from "react-router-dom";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
-import {
-  AppBar,
-  Badge,
-  ClickAwayListener,
-  Grid,
-  Hidden,
-  InputBase,
-  makeStyles,
-  Popover,
-} from "@material-ui/core";
+import { AppBar, Badge, Grid, InputBase, makeStyles } from "@material-ui/core";
 import ProfileIcon from "@material-ui/icons/PersonOutlineOutlined";
 import FavIcon from "@material-ui/icons/FavoriteBorderOutlined";
 import BagIcon from "@material-ui/icons/LocalMallOutlined";
@@ -28,28 +13,19 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import logo from "./myntraLogo.jpg";
 import { useSelector, useDispatch } from "react-redux";
-
+import { handleSearchWordChange, getProducts } from "./reducerAction";
 const style = {
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: "70%",
-  height: "90%",
+  height: "80%",
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
   p: 4,
 };
-
-// import { ProfileInfoCard } from "../../components";
-// import { useLogin, useProduct } from "../../context";
-
-// import {
-//   getAllProducts,
-//   getItemsFromCart,
-//   getItemsFromWishList,
-// } from "../../apis/productService";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -180,79 +156,35 @@ const useStyles = makeStyles((theme) => ({
 
 export function Header() {
   const classes = useStyles();
-  //   const history = useNavigate();
-  //   const path = useLocation();
   const [anchorEl, setAnchorEl] = useState(null);
   const [modalType, setModalType] = useState(0);
   const [open1, setOpen1] = React.useState(false);
   const handleOpen = () => setOpen1(true);
   const handleClose = () => setOpen1(false);
 
-  //   const { userState } = useLogin();
-  //   const searchQuery = useRef();
-
-  //   const { productsState, productsDispatch } = useProduct();
+  const dispatch = useDispatch();
+  const searchQuery = useRef();
   const [searchText, setSearchText] = useState("");
   const mystate = useSelector((state) => state.dashboard);
   const handleOpenBag = () => {
     setModalType(1);
 
     handleOpen();
-    console.log("Bag");
   };
   const handleOpenWishList = () => {
     setModalType(2);
     handleOpen();
   };
+  const handleChange = (e) => {
+    setSearchText(e.target.value);
 
-  useEffect(() => {}, [modalType]);
+    dispatch(handleSearchWordChange(e.target.value));
+    dispatch(getProducts());
+  };
+  useEffect(() => {}, [modalType, searchText]);
+
   const open = Boolean(anchorEl);
-  //   const handleProfileMenuOpen = e => {
-  //     setAnchorEl(e.currentTarget);
-  //   };
-  //   const handleProfileMenuClose = e => {
-  //     // setTimeout(() => {
-  //     setAnchorEl(null);
-  //     // }, 500);
-  //   };
 
-  //   const isLogin = useRouteMatch("/login")?.isExact;
-  //   const loadDetails = () => {
-  //     // get wishlist if logged in
-  //     if (userState.token) {
-  //       getItemsFromWishList().then(res =>
-  //         productsDispatch({
-  //           type: "SET_WISHLIST_ITEMS",
-  //           payload: res?.data?.data?.products,
-  //         })
-  //       );
-  //       getItemsFromCart().then(res =>
-  //         productsDispatch({
-  //           type: "SET_CART_ITEMS",
-  //           payload: res.data?.data?.products,
-  //         })
-  //       );
-  //     }
-
-  //     if (path.pathname === "/shop/women") {
-  //       setSection("women");
-  //     } else if (path.pathname === "/shop/men") {
-  //       setSection("men");
-  //     } else if (path.pathname === "/shop/kids") {
-  //       setSection("kids");
-  //     } else if (path.pathname === "/login") {
-  //       setSection("login");
-  //     } else if (path.pathname === "/signup") {
-  //       setSection("signup");
-  //     }
-  //   };
-  //   useEffect(
-  //     () => {
-  //       loadDetails();
-  //     },
-  //     // eslint-disable-next-line
-  //     [path]
-  //   );
   return (
     <div className="headermain">
       <AppBar className={classes.root} color={"#fff"}>
@@ -281,9 +213,10 @@ export function Header() {
                   <div className={classes.searchIcon}>
                     <SearchIcon />
                   </div>
+                  {/* <TextField id="outlined-basic" label="Outlined" variant="outlined" /> */}
                   <InputBase
                     placeholder="Search for products, brands and more"
-                    //   inputRef={searchQuery}
+                    value={searchText}
                     classes={{
                       root: classes.inputRoot,
                       input: classes.inputInput,
@@ -291,18 +224,7 @@ export function Header() {
                     inputProps={{
                       "aria-label": "Search",
                     }}
-                    onKeyPress={() => {
-                      // setSearchText(searchQuery.current.value);
-                      // getAllProducts({
-                      //   sections: section, //requestParams.section,
-                      //   search: searchText,
-                      // }).then(function (res) {
-                      //   productsDispatch({
-                      //     type: "SET_PRODUCTS",
-                      //     payload: res.data.data,
-                      //   });
-                      // });
-                    }}
+                    onChange={handleChange}
                   />
                 </div>
               </span>
@@ -310,13 +232,8 @@ export function Header() {
           }
 
           <Grid className={classes.userInfo}>
-            {/* {!(section === "signup" || section === "login") && (*/}
             <div
               className={classes.profileContainer}
-              //   onMouseEnter={handleProfileMenuOpen}
-              //   // onBlur={e => handleProfileMenuClose()}
-              //   // onMouseLeave={handleProfileMenuClose}
-              //   onClick={handleProfileMenuOpen}
               aria-owns={open ? "mouse-over-popover" : undefined}
               aria-haspopup="true"
             >
@@ -336,7 +253,6 @@ export function Header() {
                     : null
                 }
                 color="secondary"
-                //  style={{ backgroundColor: "red" }}
               >
                 <FavIcon htmlColor="#5d5b5b" />
               </Badge>
@@ -355,22 +271,6 @@ export function Header() {
             </div>
           </Grid>
         </Grid>
-
-        {/* <ClickAwayListener onClickAway={handleProfileMenuClose}>
-         <Popover
-          id="mouse-over-popover"
-          open={open}
-          anchorEl={anchorEl}
-          anchorOrigin={{
-            vertical: 56,
-            horizontal: "center",
-          }}
-          disableRestoreFocus
-          onClose={handleProfileMenuClose}
-        >
-         <ProfileInfoCard /> 
-        </Popover> 
-      </ClickAwayListener> */}
       </AppBar>
       <div>
         <Modal
@@ -385,7 +285,7 @@ export function Header() {
                 {" "}
                 <Typography
                   id="modal-modal-title"
-                  variant="h6"
+                  variant="h2"
                   component="h2"
                   className="cntr"
                 >
@@ -411,11 +311,11 @@ export function Header() {
               <>
                 <Typography
                   id="modal-modal-title"
-                  variant="h6"
+                  variant="h2"
                   component="h2"
                   className="cntr"
                 >
-                  WhisList
+                  WishList
                 </Typography>
                 <div className="modalCustomUi">
                   {mystate.wishlistItems.length !== 0 ? (

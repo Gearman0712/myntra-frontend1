@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-// import { addToWishList } from "./actions";
+import { filterByWord } from "./utilities";
 import { pData } from "./ProductsData";
 
 export const dashboardSlice = createSlice({
@@ -10,8 +10,8 @@ export const dashboardSlice = createSlice({
     orders: [],
     bagItems: [],
     wishlistItems: [],
-    bag: [...pData],
-
+    bag: [],
+    searchWord: "",
     sortBy: "",
     filters: null,
     allFilters: {
@@ -43,7 +43,18 @@ export const dashboardSlice = createSlice({
     },
     eaddToWishList: (state, action) => {
       state.wishlistItems.push(action.payload);
-      //   console.log("high");
+    },
+    addToBag: (state, action) => {
+      state.bag.push(action.payload);
+    },
+    removeBagItems: (state, action) => {
+      state.bag = action.payload;
+    },
+    removeWishListItems: (state, action) => {
+      state.wishlistItems = action.payload;
+    },
+    searchWordChange: (state, action) => {
+      state.searchWord = action.payload;
     },
   },
 });
@@ -56,6 +67,10 @@ export const {
   originalFiltersUpdate,
   filtersUpdate,
   filtersYesOrNo,
+  addToBag,
+  removeBagItems,
+  removeWishListItems,
+  searchWordChange,
 } = dashboardSlice.actions;
 
 export default dashboardSlice.reducer;
@@ -64,7 +79,7 @@ export const getProducts = () => {
   return (dispatch, getState) => {
     const state = getState((state) => state.dashboard);
     const myState = state.dashboard;
-    console.log("sort val: ", myState.dashboard);
+
     let arr = [];
     let arr1 = [];
 
@@ -152,6 +167,10 @@ export const getProducts = () => {
       }
     }
 
+    if (myState.searchWord != "") {
+      arr = filterByWord(arr, myState.searchWord);
+    }
+
     dispatch(setFilteredProducts(arr));
   };
 };
@@ -201,8 +220,47 @@ export const setAllFilters = (obj) => {
   };
 };
 export const handleAddToWishlist = (obj) => {
-  return (dispatch) => {
-    console.log("hihiih");
+  return (dispatch, getState) => {
     dispatch(eaddToWishList(obj));
+  };
+};
+export const handleAddToBag = (obj) => {
+  return (dispatch, getState) => {
+    dispatch(addToBag(obj));
+  };
+};
+
+export const handleRemoveBagItems = (objId) => {
+  return (dispatch, getState) => {
+    const state = getState((state) => state.dashboard);
+    const myState = state.dashboard;
+    if (myState.bag.length > 0) {
+      let arr = [...myState.bag];
+      let arr1 = arr.filter((e) => {
+        return e.id != objId;
+      });
+      dispatch(removeBagItems(arr1));
+    }
+  };
+};
+export const handleRemoveWishListItems = (objId) => {
+  return (dispatch, getState) => {
+    const state = getState((state) => state.dashboard);
+    const myState = state.dashboard;
+    if (myState.wishlistItems.length > 0) {
+      let arr = [...myState.wishlistItems];
+      let arr1 = arr.filter((e) => {
+        return e.id != objId;
+      });
+      dispatch(removeWishListItems(arr1));
+    }
+  };
+};
+
+export const handleSearchWordChange = (objWord) => {
+  return (dispatch, getState) => {
+    objWord = objWord.toLowerCase();
+
+    dispatch(searchWordChange(objWord));
   };
 };

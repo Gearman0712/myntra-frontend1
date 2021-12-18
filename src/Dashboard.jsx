@@ -1,21 +1,18 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid } from "@material-ui/core";
 import { Header } from "./Header";
 import { Loader } from "./Loader";
 import { ProductsList } from "./PoductsList";
 import SelectSortType from "./Sortby";
-// import { ProductsList, Header, Footer, ShopNow } from "../../components";
-// import { useProduct } from "../../context";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ProductDetails } from "./ProductDetails";
 import { Filters } from "./Filter";
-// import { Loader } from "../Common";
 import { useTheme } from "@material-ui/styles";
 import { useSelector, useDispatch } from "react-redux";
 import { getProducts, setAllOriginalFilters } from "./reducerAction";
 const useStyles = makeStyles((theme) => ({
   sliderContainer: {
-    // marginTop: "20px",
     marginBottom: "15px",
   },
   imageSlider: {
@@ -27,8 +24,7 @@ const useStyles = makeStyles((theme) => ({
 export function Dashboard(params) {
   const myState = useSelector((state) => state.productService);
   const classes = useStyles();
-  //   const history = useHistory();
-  //   const path = useLocation();
+
   const dispatch = useDispatch();
   const [showSlider, setShowSlider] = useState(true);
 
@@ -42,30 +38,41 @@ export function Dashboard(params) {
   return (
     <>
       <Header />
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              loading ? (
+                <Loader />
+              ) : (
+                <div>
+                  <Grid container style={{ paddingTop: "20px" }}>
+                    <Grid
+                      item
+                      md={3}
+                      lg={3}
+                      xl={3}
+                      display={{ xs: "none", sm: "none" }}
+                    >
+                      <Filters />
+                    </Grid>
 
-      {loading ? (
-        <Loader />
-      ) : (
-        <div>
-          <Grid container style={{ paddingTop: "20px" }}>
-            <Grid
-              item
-              md={3}
-              lg={3}
-              xl={3}
-              display={{ xs: "none", sm: "none" }}
-            >
-              <Filters />
-            </Grid>
+                    <Grid item xs={12} sm={12} md={9} lg={9} xl={9}>
+                      <SelectSortType />
+                      <ProductsList />
+                    </Grid>
+                  </Grid>
+                  <Grid></Grid>
+                </div>
+              )
+            }
+            exact
+          />
 
-            <Grid item xs={12} sm={12} md={9} lg={9} xl={9}>
-              <SelectSortType />
-              <ProductsList />
-            </Grid>
-          </Grid>
-          <Grid></Grid>
-        </div>
-      )}
+          <Route path="/:productId" element={<ProductDetails />} />
+        </Routes>
+      </BrowserRouter>
     </>
   );
 }

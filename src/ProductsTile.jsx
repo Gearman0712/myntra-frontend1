@@ -1,24 +1,17 @@
 import { useState } from "react";
-// import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-
 import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 import FilledFavoriteIcon from "@material-ui/icons/Favorite";
-
-import StarIcon from "@material-ui/icons/StarOutlined";
-
 import { isItemAdded } from "./utilities";
-import { SnackbarView } from "./SnackbarView";
 import { Slider } from "./Slider";
-// import { useLogin, useProduct } from "../../context";
-// import { addItemToWishList } from "../../apis/productService";
 import { useDispatch, useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
 import { handleAddToWishlist } from "./reducerAction";
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "210px",
-    height: "410px",
+    height: "450px",
     position: "relative",
     margin: "0px 10px 30px",
     boxSizing: "border-box",
@@ -192,49 +185,14 @@ const useStyles = makeStyles((theme) => ({
 
 export function ProductTile(props) {
   const classes = useStyles();
-  //   const history = useHistory();
+  const navigate = useNavigate();
   const { details } = props;
-  //   const { userState } = useLogin();
-  //   const { productsState, productsDispatch } = useProduct();
-
+  const dispatch = useDispatch();
   const [play, setPlay] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const mystate = useSelector((state) => state.dashboard);
-  //   const handleAddToWishlist = (product) => {
-  //     //     setLoading(true);
-  //     //     userState.token
-  //     //       ? addItemToWishList({ _id: product._id })
-  //     //           .then(res => {
-  //     //             let wishlist = [];
-  //     //             if (productsState?.wishlistItems) {
-  //     //               wishlist = productsState?.wishlistItems;
-  //     //               wishlist.push(product);
-  //     //             } else {
-  //     //               wishlist.push(product);
-  //     //             }
-  //     //             productsDispatch({
-  //     //               type: "SET_WISHLIST_ITEMS",
-  //     //               payload: wishlist,
-  //     //             });
-  //     //             setMessage(prevState => ({
-  //     //               ...prevState,
-  //     //               message: "Product added to wishlist.",
-  //     //               type: "success",
-  //     //             }));
-  //     //             setLoading(false);
-  //     //           })
-  //     //           .catch(err => {
-  //     //             setMessage(prevState => ({
-  //     //               ...prevState,
-  //     //               message: "Something went wrong please try again",
-  //     //               type: "error",
-  //     //             }));
-  //     //             setLoading(false);
-  //     //           })
-  //     //       : history.push("/login");
-  //   };
 
   return (
     <div
@@ -242,46 +200,33 @@ export function ProductTile(props) {
       onMouseEnter={() => setPlay(true)}
       onMouseLeave={() => setPlay(false)}
     >
-      {/* {message && message?.type && <SnackbarView message={message} />}
-      {loading && <ClipLoader color="#ffffff" loading={true} size={20} />} */}
-
       <div
         className={classes.pictureContainer}
-        // onClick={() => history.push(`/shop/${details._id}`)}
+        onClick={() => {
+          navigate(`/${details.id}`);
+        }}
       >
-        {/* <img
-          srcSet={details?.image[0]}
-          loading="lazy"
-          // "https://assets.myntassets.com/f_webp,dpr_1.5,q_60,w_210,c_limit,fl_progressive/assets/images/7546900/2019/1/24/c9be0d6e-30a4-4242-b4e0-1c166b73f2781548320874402-HERENOW-Men-Polo-Collar-T-shirt-4861548320873235-1.jpg"
-          className={classes.picture}
-        /> */}
         <Slider
           className={classes.imageSlider}
-          sliderItems={
-            // details?.image.map(img => (img.src = img))
-            details?.image.map(function (img) {
-              return { src: img };
-            })
-          }
+          sliderItems={details?.image.map(function (img) {
+            return { src: img };
+          })}
           sliderType="fade"
           sliderAutoPlay={play} //{true}
           sliderStopOnHover={false}
           slideNavigatorsHide={true}
           sliderIndicators
-          // sliderIndicatorsStyle={{
-          //   padding: "10px",
-          // }}
           sliderActiveIndicator={{
             color: "#ff3e6c",
           }}
         />
       </div>
-      {/* {details?.tag && <div className="tagContainer">{details?.tag}</div>} */}
+
       {!isItemAdded(mystate.wishlistItems, details.id) ? (
         <div
           className="wishlistContainer"
           onClick={() => {
-            handleAddToWishlist(details);
+            dispatch(handleAddToWishlist(details));
           }}
         >
           <span className={classes.wishlist}>
@@ -298,27 +243,10 @@ export function ProductTile(props) {
         </div>
       )}
 
-      {/* {details?.ratingsReviews?.ratings && (
-        <div className="productRatingContainer">
-          <span>{ratingCalculator(details?.ratingsReviews?.ratings)[0]}</span>
-          <StarIcon fontSize="small" htmlColor="#68D391" />
-          <div className="productRatingCount">
-            <div className="seperator">|</div>
-            {ratingCalculator(details?.ratingsReviews?.ratings)[1]}
-          </div>
-        </div>
-      )} */}
       <div className="productInfo">
-        {/* brand */}
-        <div className="brandName">{details.brand}</div>
+        <div className="brandName">{details.brand.toUpperCase()}</div>
         <div className="productName">{details.name}</div>
-        {/* <div className="productSizes">
-          {details.sizes && details.sizes.length > 0 ? (
-            <span className="sizes">S,M,L,XL</span>
-          ) : (
-            <span>Onesize</span>
-          )}
-        </div> */}
+        <div className="productName">Price : Rs {details.price}</div>
       </div>
     </div>
   );

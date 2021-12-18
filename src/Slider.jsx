@@ -1,9 +1,7 @@
 import Carousel from "react-material-ui-carousel";
 import { makeStyles } from "@material-ui/core/styles";
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   imageSlider: {
-    // width: "100%",
-    // maxWidth: "200px",
     maxHeight: "450px",
     height: "450px",
     cursor: "pointer",
@@ -99,12 +97,4 @@ function Item(props) {
     case "CONTENT":
       return <span></span>;
   }
-  //   return (
-  //     <Paper>
-  //       <h2>{props.item.name}</h2>
-  //       <p>{props.item.description}</p>
-
-  //       <Button className="CheckButton">Check it out!</Button>
-  //     </Paper>
-  //   );
 }

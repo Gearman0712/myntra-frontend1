@@ -12,8 +12,21 @@ const isFilterSelected = (list, id) => {
       return item === id;
     });
   } else {
-    console.log(false);
     return false;
   }
 };
-export { isItemAdded, isFilterSelected };
+const filterByWord = (list, word) => {
+  if (word === "") return list;
+  if (list.length == 0) return list;
+
+  let arr = [];
+  arr = list.filter((e) => {
+    let str = e.name + "#" + e.brand + "#" + e.color + "#" + e.gender;
+    str = str.toLowerCase();
+    if (str.includes(word)) return true;
+    else return false;
+  });
+
+  return arr;
+};
+export { isItemAdded, isFilterSelected, filterByWord };
